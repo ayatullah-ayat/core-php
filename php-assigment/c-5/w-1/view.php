@@ -42,7 +42,7 @@ if(array_key_exists('profile_id', $_GET)) {
 			<p>Headline: <strong><?= htmlentities($headline) ?></strong> </p>
 			<p>Summary: <strong><?= htmlentities($summary) ?> </strong></p>
 		<? } ?>
-
+		<a href="index.php">Back</a>
 
 	</div>
 

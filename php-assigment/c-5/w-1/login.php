@@ -28,18 +28,18 @@ if(!empty($_POST)) {
 		));
 		$row = $stmt-> fetch(PDO::FETCH_ASSOC);
 
-		print_r($row);
+		
 		if($row){
 			error_log("Login success ".$_POST['email']);
             $_SESSION['name'] = $row['name'];
 			$_SESSION['user_id'] = $row['user_id'];
-			print_r($row);
-            // header("Location: index.php");
-            // return;
+            header("Location: index.php");
+			return;
 		}else {
 			$_SESSION['error'] = "Incorrect password";
             error_log("Login fail ".$_POST['email']);
             header("Location: login.php");
+			return;
 		}
 	}
 
@@ -69,13 +69,32 @@ if(!empty($_POST)) {
 				<label for="email">Email</label>
 				<input type="text" name="email" id="email"><br/>
 
-				<label for="userPass">Password</label>
-				<input type="text" name="pass" id="userPass"><br/>
+				<label for="pass">Password</label>
+				<input type="text" name="pass" id="pass"><br/>
 				
-				<input type="submit" value="Log In">
+				<input onclick="return doValidate();" type="submit" value="Log In">
 				<input type="submit" name="cancel" value="Cancel">
 			</form>
 		</div>
+
+		<script>
+			function doValidate() {
+				alert('validating...');
+				
+				try {
+					const email = document.getElementById('email').value;
+					const pass = document.getElementById('pass').value;
+					if(!email || !pass) {
+						alert("Both fields must be filled out");
+						return false;
+					}
+					return true;
+				}catch(e) {
+					return false;
+				}
+				return false;
+			}
+		</script>
 	</body>
 
 </html>
