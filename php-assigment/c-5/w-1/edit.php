@@ -5,11 +5,30 @@ if(isset($_POST['cancel'])) {
     header('Location: index.php');
     return;
 }
-
-if(!empty($_POST)) {
+if(!isset($_SESSION['name'])) {
+    die('Not logged in');
+}
+if(isset($_POST['first_name']) and isset($_POST['last_name']) and isset($_POST['email']) and isset($_POST['headline']) and isset($_POST['summary'])) {
     
+    if(!strpos($_POST['email'], '@')) {
+        $_SESSION['errors'] = "Email address must contain @";
+        header("Location: edit.php?profile_id=".$_POST['profile_id']);
+        return;
+    }else {
+        $stmt = $pdo->prepare("UPDATE Profile SET first_name = :fn, last_name = :ln, email = :em, headline = :hl, summary = :su WHERE profile_id = :pid");
 
-    print_r($_POST);
+        $stmt->execute(array(
+            "pid" => $_GET['profile_id'],
+            "fn" => $_POST['first_name'],
+            "ln" => $_POST['last_name'],
+            "em" => $_POST['email'],
+            "hl" => $_POST['headline'],
+            "su" => $_POST['summary']
+        ));
+        $_SESSION['success'] = "Profile Updated";
+        header("Location: index.php");
+        return;
+    }
 
 }
 
@@ -51,10 +70,10 @@ if(isset($_SESSION['name']) and isset($_GET['profile_id'])) {
     ?>
         <form method="post">
             <label for="firstName">First Name:</label>
-            <input type="text" name="first-name" value=<?= $row['first_name'] ?> id="firstName"><br/>
+            <input type="text" name="first_name" value=<?= $row['first_name'] ?> id="firstName"><br/>
 
             <label for="lastName">Last Name:</label>
-            <input type="text" name="last-name" value=<?= $row['last_name'] ?> id="lastName"><br/>
+            <input type="text" name="last_name" value=<?= $row['last_name'] ?> id="lastName"><br/>
 
             <label for="email">Email:</label>
             <input type="text" name="email" value=<?= $row['email'] ?> id="email"><br/>
@@ -64,9 +83,9 @@ if(isset($_SESSION['name']) and isset($_GET['profile_id'])) {
 
             <label for="summary">Summary:</label>
             <textarea name="summary" rows="8" cols="80"><?= $row['summary'] ?></textarea></br>
-            <input type="hidden" name="user_id" value = <?= $row['user_id'] ?>>
-            <button type="submit" value="submitted">Add</button>
-            <button type="submit" name="cancel">Cancel</button>
+            <input type="hidden" name="profile_id" value = <?= $row['profile_id'] ?>>
+            <input type="submit" value="Save">
+            <input type="submit" name="cancel" value="Cancel">
         </form>
     </div>
 </body>

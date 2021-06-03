@@ -58,7 +58,7 @@ if(!empty($_POST)) {
 </head>
 	<body>
 		<div class="container pt-2">
-			<p>Login:</p>
+			<p>Please Log In</p>
 			<?php 
 				if(isset($_SESSION['error'])) {
 					echo "<p class='text-warning'>". $_SESSION['error']."</p>";
@@ -70,7 +70,7 @@ if(!empty($_POST)) {
 				<input type="text" name="email" id="email"><br/>
 
 				<label for="pass">Password</label>
-				<input type="text" name="pass" id="pass"><br/>
+				<input type="password" name="pass" id="pass"><br/>
 				
 				<input onclick="return doValidate();" type="submit" value="Log In">
 				<input type="submit" name="cancel" value="Cancel">
@@ -79,13 +79,15 @@ if(!empty($_POST)) {
 
 		<script>
 			function doValidate() {
-				alert('validating...');
 				
 				try {
 					const email = document.getElementById('email').value;
 					const pass = document.getElementById('pass').value;
 					if(!email || !pass) {
 						alert("Both fields must be filled out");
+						return false;
+					}else if(!email.includes("@")) {
+						alert("Invalid email address");
 						return false;
 					}
 					return true;

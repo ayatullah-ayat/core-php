@@ -34,15 +34,15 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 				echo '<a href="logout.php">Logout</a>';
 				
 			}else{
-				echo '<a href="login.php">Please login</a>';
+				echo '<a href="login.php">Please log in</a>';
 			}
 		?>
 
 		<?php 
 			if(count($rows) > 0) {
 				echo "<table border='1'><thead><tr>";
-				echo "<th>name</th>";
-				echo "<th>headline</th>";
+				echo "<th>Name</th>";
+				echo "<th>Headline</th>";
 				// IF USER LOGIN SUCCESSFULLY
 				if(isset($_SESSION['name']) && isset($_SESSION['user_id'])) {
 					echo "<th>Action</th>";
@@ -63,9 +63,9 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 					echo "</tr>";
 				}
 				echo "</tbody></table>";
-				if(isset($_SESSION['name']) && isset($_SESSION['user_id'])) {
-					echo "<a href='add.php'>Add New Entry</a>";
-				}
+			}
+			if(isset($_SESSION['name']) && isset($_SESSION['user_id'])) {
+				echo "</br><a href='add.php'>Add New Entry</a>";
 			}
 		?>
 

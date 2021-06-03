@@ -14,29 +14,26 @@ if(!empty($_POST)) {
     echo "<pre>";
     print_r($_POST);
     echo "</pre>";
-    if(isset($_POST['first-name']) and isset($_POST['last-name']) and isset($_POST['email']) and isset($_POST['headline']) and isset($_POST['summary'])){
-        echo "yes isset";
-        if(empty($_POST['first-name'])) {
+    if(isset($_POST['first_name']) and isset($_POST['last_name']) and isset($_POST['email']) and isset($_POST['headline']) and isset($_POST['summary'])){
+        
+        if(empty($_POST['first_name'])) {
             $_SESSION['errors'] = "All fields are required";
             header("Location: add.php");
             return;
-        }if(!ctype_alpha($_POST['first-name'])) {
+        }if(!ctype_alpha($_POST['first_name'])) {
             $_SESSION['errors'] = "first name shouldn't be numbers or special character";
             header("Location: add.php");
             return;
         }
-        if(empty($_POST['last-name'])) {
+        if(empty($_POST['last_name'])) {
             $_SESSION['errors'] = "All fields are required";
             header("Location: add.php");
             return;
         }
-        if(!ctype_alpha($_POST['last-name'])) {
+        if(!ctype_alpha($_POST['last_name'])) {
             $_SESSION['errors'] = "last name shouldn't be numbers or special character";
             header("Location: add.php");
             return;
-        }
-        if(!strpos($_POST['email'], '@')) {
-            $_SESSION['errors'] = "email should have @";
         }
         if(empty($_POST['headline'])) {
             $_SESSION['errors'] = "All fields are required";
@@ -47,6 +44,11 @@ if(!empty($_POST)) {
             $_SESSION['errors'] = "All fields are required";
             header("Location: add.php");
             return;
+        }
+        if(!strpos($_POST['email'], '@')) {
+            $_SESSION['errors'] = "Email address must contain @";
+            header('Location: add.php');
+            return;
         }else {
             $sql = "INSERT INTO profile(user_id, first_name, last_name, email, headline, summary) 
             VALUES(:uid, :fn, :ln, :em, :hl, :su) ";
@@ -54,8 +56,8 @@ if(!empty($_POST)) {
             $stmt = $pdo->prepare($sql);
             $stmt->execute(array(
                 'uid' => $_SESSION['user_id'],
-                'fn' => $_POST['first-name'],
-                'ln' => $_POST['last-name'],
+                'fn' => $_POST['first_name'],
+                'ln' => $_POST['last_name'],
                 'em' => $_POST['email'],
                 'hl' => $_POST['headline'],
                 'su' => $_POST['summary']
@@ -90,10 +92,10 @@ if(!empty($_POST)) {
     ?>
         <form method="post">
             <label for="firstName">First Name:</label>
-            <input type="text" name="first-name" id="firstName"><br/>
+            <input type="text" name="first_name" id="firstName"><br/>
 
             <label for="lastName">Last Name:</label>
-            <input type="text" name="last-name" id="lastName"><br/>
+            <input type="text" name="last_name" id="lastName"><br/>
 
             <label for="email">Email:</label>
             <input type="text" name="email" id="email"><br/>
