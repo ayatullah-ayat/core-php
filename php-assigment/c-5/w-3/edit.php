@@ -50,11 +50,11 @@ if(strtolower($_SERVER['REQUEST_METHOD']) == 'post') {
             ':pid' => $_GET['profile_id']
         ));
 
-
+        $_SESSION['postData'] = $_POST;
         // added position into the database
         $rank = 1;
         for($i = 1; $i <= 9; $i++) {
-            // skip if is missing
+            // skip if missing
             if(!isset($_POST['position-year' . $i]) or !isset($_POST['position-description' . $i])){continue;}
 
             $year = $_POST['position-year' . $i];
@@ -73,13 +73,13 @@ if(strtolower($_SERVER['REQUEST_METHOD']) == 'post') {
         
 
 
-        $_SESSION['success'] = "profile added";
+        $_SESSION['success'] = "Profile updated";
         header("Location: index.php");
         return;      
     }
 }
 
-
+// profile
 $stmt = $pdo->prepare('SELECT * FROM Profile WHERE profile_id = :pid');
 $stmt->execute(array(
     ':pid' => $_GET['profile_id']
@@ -93,7 +93,6 @@ $stmt->execute(array(
     ':pid' => $_GET['profile_id']
 ));
 $positionData = $stmt->fetchAll(PDO::FETCH_ASSOC);
-debug($positionData);
 
 ?>
 
@@ -140,13 +139,14 @@ debug($positionData);
                 <button id="addPosition" class="btn btn-secondary">+</button>
             </div>
 
+            <!--  -->
             <div id="addingPositionField">
                 <? if($positionData) { ?>
                     <? foreach($positionData as $singleData) { ?>
                         <div id="positions<?= $singleData['rank'] ?>">
                                 <div class="form-group">
                                     <label for="year">Year</label>
-                                    <input type="text" name="position-year<?= $singleData['rank'] ?> " value="<?= $singleData['year'] ?>">
+                                    <input type="text" name="position-year<?= $singleData['rank'] ?>" value="<?= $singleData['year'] ?>">
                                     <button id="subPosition<?= $singleData['rank'] ?>" class="btn btn-secondary">-</button>
                                 </div>
                                 <div class="form-group">
@@ -158,7 +158,7 @@ debug($positionData);
             <!-- new added field goes here -->
 
 
-            <button type="submit" value="submitted">Add</button>
+            <button type="submit" value="Save">Save</button>
             <button type="submit" name="cancel">Cancel</button>
         </form>
         <? } ?>
@@ -167,7 +167,11 @@ debug($positionData);
     <script>
         $(document).ready(function() {
             const maxAddedNumber = 9;
-            let count = <?= count($positionData) ?>;
+            <? if($positionData) { ?>
+                let count = <?= count($positionData) ?>;
+            <? } else { ?>
+                let count = 0;
+            <? } ?>
             
             $('#addPosition').click(function(e) {
                 e.preventDefault();

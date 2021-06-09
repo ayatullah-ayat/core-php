@@ -4,10 +4,7 @@ function validateProfile($enterredData) {
     if(empty($enterredData['first_name']) or empty($enterredData['last_name']) or empty($enterredData['email']) or empty($enterredData['headline']) or empty($enterredData['summary'])) {
         return "All fields are required";
     }
-    else if(!ctype_alpha($enterredData['first_name']) or !ctype_alpha($enterredData['last_name'])) {
-        return "first and last name shouldn't be any numbers";
-    }
-    else if(!strpos($enterredData['email'], '@')) {
+    if(!strpos($enterredData['email'], '@')) {
         return "Email address must contain @";
     }
 

@@ -1,5 +1,6 @@
 <?php 
 include_once('pdo.php');
+include_once('utility.php');
 session_start();
 
 $sql = "SELECT  * FROM profile";
