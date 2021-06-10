@@ -1,5 +1,6 @@
 <?php
 include_once('pdo.php');
+include_once('utility.php');
 session_start();
 
 // cancel
@@ -9,41 +10,36 @@ if(isset($_POST['cancel'])) {
 }
 // login
 if(!empty($_POST)) {
-	$stored_hash = hash('md5', 'XyZzy12*_php123');
-	// email and password login validation
-	$email = $_POST['email'];
-	$password = $_POST['pass'];
-	if(!$email || !$password) {
-		$_SESSION['error'] = "Email and Password are required";
-	}else if (strpos($_POST['email'], "@") === false) {
-        $_SESSION['error'] = "Email must have an at-sign (@)";
-        header("Location: login.php");
-        return;
-    }else {
-		$valid_pass = hash('md5', 'XyZzy12*_'.$password);
-		$stmt = $pdo->prepare('SELECT user_id, name FROM users WHERE email = :em AND password= :pw');
-		$stmt->execute(array(
-			':em'=> $email,
-			':pw'=> $valid_pass
-		));
-		$row = $stmt-> fetch(PDO::FETCH_ASSOC);
-
-		
-		if($row){
-			error_log("Login success ".$_POST['email']);
-            $_SESSION['name'] = $row['name'];
-			$_SESSION['user_id'] = $row['user_id'];
-            header("Location: index.php");
-			return;
-		}else {
-			$_SESSION['error'] = "Incorrect password";
-            error_log("Login fail ".$_POST['email']);
-            header("Location: login.php");
-			return;
-		}
+	$msg = validLoginUser($_POST['email'], $_POST['pass']);
+	if(is_string($msg)) {
+		$_SESSION['errors'] = $msg;
+		header('Location: login.php');
+		return;
 	}
 
+	$stored_hash = hash('md5', 'XyZzy12*_php123');
+	$hash_pass = hash('md5', 'XyZzy12*_'.$_POST['pass']);
 
+	$stmt = $pdo->prepare('SELECT user_id, name FROM users WHERE email = :em AND password= :pw');
+	$stmt->execute(array(
+		':em'=> $_POST['email'],
+		':pw'=> $hash_pass
+	));
+	$row = $stmt-> fetch(PDO::FETCH_ASSOC);
+
+		
+	if($row){
+		error_log("Login success ".$_POST['email']);
+        $_SESSION['name'] = $row['name'];
+		$_SESSION['user_id'] = $row['user_id'];
+        header("Location: index.php");
+		return;
+	}else {
+		$_SESSION['error'] = "Incorrect password";
+        error_log("Login fail ".$_POST['email']);
+        header("Location: login.php");
+		return;
+	}
 }
 
 

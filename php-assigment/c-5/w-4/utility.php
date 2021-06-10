@@ -1,5 +1,17 @@
 <?php
 
+
+function validLoginUser($email, $password) {
+    if(!$email || !$password) {
+		return "Email and Password are required";
+	}
+    if (strpos($_POST['email'], "@") === false) {
+        return "Email must have an at-sign (@)";
+    }
+
+    return true;
+}
+
 function validateProfile($enterredData) {
     if(empty($enterredData['first_name']) or empty($enterredData['last_name']) or empty($enterredData['email']) or empty($enterredData['headline']) or empty($enterredData['summary'])) {
         return "All fields are required";
