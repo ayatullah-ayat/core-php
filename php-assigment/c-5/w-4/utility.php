@@ -62,6 +62,6 @@ function validateEducation($enterredData) {
 
 function debug($enterredData) {
     echo "<pre>";
-    var_dump($enterredData);
+    print_r($enterredData);
     echo "</pre>";
 }

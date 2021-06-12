@@ -1,5 +1,6 @@
 <?php 
 include_once('pdo.php');
+include_once('utility.php');
 
 if(array_key_exists('profile_id', $_GET)) {
 	$profile_id = $_GET['profile_id'];
@@ -28,8 +29,14 @@ if(array_key_exists('profile_id', $_GET)) {
 	));
 	$posRow = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+	// query into the education table, and fetch all the education data
 
-	
+	$stmt = $pdo->prepare('SELECT Education.year, Institution.name FROM Education INNER JOIN Institution ON Education.profile_id = :id AND Education.institution_id = Institution.institution_id');
+	$stmt->execute(array(
+		':id' => $profile_id
+	));
+	$eduRow = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 }
 
 
@@ -53,11 +60,18 @@ if(array_key_exists('profile_id', $_GET)) {
 			<p>Summary: <strong><?= htmlentities($summary) ?> </strong></p>
 		<? } ?>
 		<? if($posRow){ ?>
-			<p>Position:</p>
+			<p>Position: </p>
 			<? foreach($posRow as $row) { ?>
 				<ul>
-					<li>year: <?= htmlentities($row['year']) ?></li>
-					<li>description: <?= htmlentities($row['description']) ?></li>
+					<li><?= htmlentities($row['year']).', ' . htmlentities($row['description']) ?></li>
+				</ul>
+			<? } ?>
+		<? } ?>
+		<? if($eduRow){ ?>
+			<p>Education: </p>
+			<? foreach($eduRow as $row) { ?>
+				<ul>
+					<li><?= htmlentities($row['year']).', ' . htmlentities($row['name']) ?></li>
 				</ul>
 			<? } ?>
 		<? } ?>
