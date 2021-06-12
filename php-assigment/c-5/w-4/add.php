@@ -9,11 +9,7 @@ if(isset($_POST['cancel'])) {
     return;
 }
 
-if(!empty($_POST)) {
-    echo "<pre>";
-    print_r($_POST);
-    echo "</pre>";
-    if(isset($_POST['first_name']) and isset($_POST['last_name']) and isset($_POST['email']) and isset($_POST['headline']) and isset($_POST['summary'])){
+if(strtolower($_SERVER['REQUEST_METHOD']) == 'post') {
         $msg = validateProfile($_POST);
         if(is_string($msg)){
             $_SESSION['errors'] = $msg;
@@ -26,6 +22,15 @@ if(!empty($_POST)) {
             header('Location: add.php');
             return;
         }
+        $msg = validateEducation($_POST);
+        if(is_string($msg)) {
+            $_SESSION['errors'] = $msg;
+            header('Location: add.php');
+            return;
+        }
+
+        // Now all data is validated. Now we can insert confidently
+
         // insert profile into the database
         $sql = "INSERT INTO profile(user_id, first_name, last_name, email, headline, summary) 
         VALUES(:uid, :fn, :ln, :em, :hl, :su) ";
@@ -59,11 +64,46 @@ if(!empty($_POST)) {
                 ':desc' => $desc)
             );
             $rank++;
-        } 
+        }
+
+        // insert education into the database
+        $rank = 1;
+        for($i = 1; $i <= 9; $i++) {
+            if(!isset($_POST['education-year' . $i]) or !isset($_POST['education-school' . $i])){continue;}
+
+            $year = $_POST['education-year' . $i];
+            $school = $_POST['education-school' . $i];
+
+            // look for school id from the institution table - if found then insert into the education table, otherwise show session error
+            $stmt = $pdo->prepare("SELECT * FROM Institution WHERE name = :school");
+            $stmt->execute(array(
+                ':school' => $school
+            ));
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            // if found then insert into the education database table
+            if($row) {
+                $institution_id = $row['institution_id'];
+
+                $stmt = $pdo->prepare('INSERT INTO Education (profile_id, institution_id, rank, year) VALUES(:pid, :iid, :rank, :year)');
+
+                $stmt->execute(array(
+                    ':pid' => $profile_id,
+                    ':iid' => $institution_id,
+                    ':rank' => $rank,
+                    ':year' => $year
+                ));
+            }else {
+                $_SESSION['errors'] = 'Education is not inserted';
+                header('Location: add.php');
+                return;
+            }
+            $rank++;
+        }
+
         $_SESSION['success'] = "profile added";
         header("Location: index.php");
         return;      
-    }
+
 }
 
 

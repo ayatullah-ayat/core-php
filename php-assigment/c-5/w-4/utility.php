@@ -40,8 +40,28 @@ function validatePosition($enterredData) {
     return true;
 }
 
+function validateEducation($enterredData) {
+    for($i = 1; $i <= 9; $i++) {
+        // if the property not found, then skip
+        if(!isset($enterredData['education-year' . $i]) or !isset($enterredData['education-school' . $i])) {
+            continue;
+        }
+
+        $year = $enterredData['education-year' . $i];
+        $school = $enterredData['education-school' . $i];
+
+        if(empty($year) or empty($school)) {
+            return "All fields are required";
+        }
+        if(!is_numeric($year)) {
+            return "Education year must be numeric";
+        }
+        return true;
+    }
+}
+
 function debug($enterredData) {
     echo "<pre>";
-    print_r($enterredData);
+    var_dump($enterredData);
     echo "</pre>";
 }
