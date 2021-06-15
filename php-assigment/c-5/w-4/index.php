@@ -18,7 +18,7 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <html>
 <head>
     <title>Ayatullah Khamini</title>
-    <?php require_once "bootstrap.php"; ?>
+    <?php require_once("bootstrap.php"); ?>
 </head>
 <body>
 
