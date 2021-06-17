@@ -4,6 +4,7 @@
 
 include_once('config/config.php');
 
+// include all libraries class at once
 spl_autoload_register(function($className) {
     include_once('libraries/' . $className . '.php');
 });
