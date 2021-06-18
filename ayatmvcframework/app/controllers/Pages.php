@@ -4,12 +4,11 @@ class Pages extends Controller{
 
     public function __construct()
     {
-        $this->postMethod = $this->model('Post');
+        
     }
 
     public function index() {
-        $posts = $this->postMethod->getPosts();
-        $data = ['title' => 'welcome', 'posts' => $posts];
+        $data = ['title' => 'welcome'];
         $this->view('pages/index', $data);
     }
     public function about() {

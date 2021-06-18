@@ -14,9 +14,11 @@ class Core {
     {
         // LOADING THE CONTROLLER FROM THE URL - /posts/edit/2
         $url = $this->getUrl();
-        if(file_exists('../app/controllers/' . ucwords($url[0]) . '.php')) {
-            $this->currentController = ucwords($url[0]);
-            unset($url[0]);
+        if($url){
+            if(file_exists('../app/controllers/' . ucwords($url[0]) . '.php')) {
+                $this->currentController = ucwords($url[0]);
+                unset($url[0]);
+            }
         }
 
         include_once('../app/controllers/' . $this->currentController . '.php');
